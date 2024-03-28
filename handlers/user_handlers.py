@@ -171,7 +171,7 @@ async def get_phone_friend(message: Message, state: FSMContext) -> None:
     await message.answer(text='Спасибо! Ваш второй подарок чек-лист \n<a href="https://drive.google.com/file/d/1W9MxscFaF7e_DQQWchKj5LrT_F5K4j0L/view">'
                               '«Как быстро выйти из операционки»</a>',
                          parse_mode='html')
-
+    user_dict[message.chat.id] = await state.get_data()
     append_contact(list_contact=[user_dict[message.chat.id]['friend_name'],
                                  user_dict[message.chat.id]['friend_phone']],
                    sheet='friends')
