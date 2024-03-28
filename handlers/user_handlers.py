@@ -131,9 +131,9 @@ async def process_press_yes_2(callback: CallbackQuery, state: FSMContext) -> Non
     :return:
     """
     logging.info(f'process_press_yes_2: {callback.message.chat.id}')
-    await callback.message.answer(text='Супер!\n\n'
-                                       'Напишите номер телефона и ФИО, кому Вы хотели бы нас порекомендовать для'
-                                       ' подбора персонала. Сначала пришлите ФИО')
+    await callback.message.answer(text='Супер! '
+                                       'Напишите контакты, кому Вы хотели бы нас порекомендовать для'
+                                       ' подбора персонала. Для начала пришлите ФИО')
     await state.set_state(User.friend_name)
 
 
@@ -147,7 +147,7 @@ async def get_friend(message: Message, state: FSMContext) -> None:
     """
     logging.info(f'get_friend: {message.chat.id}')
     await state.update_data(friend_name=message.text)
-    await message.answer(text='Теперь пришлите телефон')
+    await message.answer(text='Отлично! Теперь пришлите телефон')
     await state.set_state(User.friend_phone)
 
 
@@ -169,11 +169,11 @@ async def get_phone_friend(message: Message, state: FSMContext) -> None:
             return
     await state.update_data(friend_phone=phone)
     await message.answer(text='Спасибо! Ваш второй подарок чек-лист \n<a href="https://drive.google.com/file/d/1W9MxscFaF7e_DQQWchKj5LrT_F5K4j0L/view">'
-                              '«Как быстро выйти из операционки»</a>\n\n'
-                              'Желаем успехов и побед в новых начинаниях!',
+                              '«Как быстро выйти из операционки»</a>',
                          parse_mode='html')
+
     append_contact(list_contact=[user_dict[message.chat.id]['friend_name'],
                                  user_dict[message.chat.id]['friend_phone']],
                    sheet='friends')
-    await message.answer(text='Подписывайтесь на наш телеграмм канал - https://t.me/hrfactor',
+    await message.answer(text='Желаем успехов и побед в новых начинаниях! Наш телеграмм канал - https://t.me/hrfactor',
                          reply_markup=keyboard_url_channel())
