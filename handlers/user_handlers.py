@@ -46,9 +46,11 @@ async def process_start_command(message: Message) -> None:
     :return:
     """
     logging.info(f'process_start_command: {message.chat.id}')
-    await message.answer(text=f'Добрый день! Я бот рекрутингового агентства HR-factor!'
+    await message.answer(text=f'Добрый день!\n'
+                              f'<b>Я бот рекрутингового агентства HR-factor!</b>\n'
                               f'Хотите получить подарки?',
-                         reply_markup=keyboard_start())
+                         reply_markup=keyboard_start(),
+                         parse_mode='html')
 
 
 @router.callback_query(F.data == 'yes_1')
@@ -60,8 +62,9 @@ async def process_press_yes_1(callback: CallbackQuery, state: FSMContext) -> Non
     :return:
     """
     logging.info(f'process_press_yes_1: {callback.message.chat.id}')
-    await callback.message.answer(text='Отлично! Напишите, пожалуйста, название Вашей компании или бренда. В случае'
-                                       ' отсутствия такового, укажите сферу Вашей деятельности.')
+    await callback.message.answer(text=f'Отлично!\n'
+                                       f'Напишите, пожалуйста, название вашей компании или бренда.\n\n'
+                                       f'В случае отсутствия такового, укажите сферу вашей деятельности.')
     await state.set_state(User.name_company)
 
 @router.message(F.text, StateFilter(User.name_company))
@@ -74,7 +77,8 @@ async def get_name_company(message: Message, state: FSMContext) -> None:
     """
     logging.info(f'get_name_company: {message.chat.id}')
     await state.update_data(name_company=message.text)
-    await message.answer(text='Спасибо! Теперь укажите Ваши ФИО.')
+    await message.answer(text='Спасибо!\n'
+                              'Теперь укажите ваши ФИО.')
     await state.set_state(User.name_user)
 
 
@@ -88,7 +92,8 @@ async def get_name_user(message: Message, state: FSMContext) -> None:
     """
     logging.info(f'get_name_user: {message.chat.id}')
     await state.update_data(name_user=message.text)
-    await message.answer(text='Супер! Напишите контактный номер телефона, по которому с Вами можно связаться.',
+    await message.answer(text='Супер!\n'
+                              'Напишите контактный номер телефона, по которому с вами можно связаться.',
                          reply_markup=keyboards_get_phone())
     await state.set_state(User.phone_user)
 
@@ -110,7 +115,8 @@ async def get_phone_user(message: Message, state: FSMContext) -> None:
             await message.answer(text="Неверный формат номера, повторите ввод.")
             return
     await state.update_data(phone_user=phone)
-    await message.answer(text='Спасибо! Ваш первый подарок '
+    await message.answer(text='Спасибо!\n'
+                              'Ваш первый подарок \n'
                               '<a href="https://docs.google.com/document/d/1qhig8Sf3m7YIKvR7XiKNkuCm1IbyMx1P/edit?usp=drivesdk&ouid=101031225042222203205&rtpof=true&sd=true">«Главный файл должности собственника»</a>',
                          parse_mode='html')
     await message.answer(text='Хотите получить второй подарок: пошаговую инструкцию быстрого выхода из операционки?',
@@ -131,9 +137,9 @@ async def process_press_yes_2(callback: CallbackQuery, state: FSMContext) -> Non
     :return:
     """
     logging.info(f'process_press_yes_2: {callback.message.chat.id}')
-    await callback.message.answer(text='Супер! '
-                                       'Напишите контакты, кому Вы хотели бы нас порекомендовать для'
-                                       ' подбора персонала. Для начала пришлите ФИО')
+    await callback.message.answer(text='Супер!\n'
+                                       'Напишите контакты, кому вы хотели бы нас порекомендовать для подбора персонала.\n\n'
+                                       'Для начала пришлите ФИО:')
     await state.set_state(User.friend_name)
 
 
@@ -147,7 +153,8 @@ async def get_friend(message: Message, state: FSMContext) -> None:
     """
     logging.info(f'get_friend: {message.chat.id}')
     await state.update_data(friend_name=message.text)
-    await message.answer(text='Отлично! Теперь пришлите телефон')
+    await message.answer(text='Отлично!\n'
+                              'Теперь пришлите телефон:')
     await state.set_state(User.friend_phone)
 
 
@@ -168,12 +175,15 @@ async def get_phone_friend(message: Message, state: FSMContext) -> None:
             await message.answer(text="Неверный формат номера, повторите ввод.")
             return
     await state.update_data(friend_phone=phone)
-    await message.answer(text='Спасибо! Ваш второй подарок чек-лист \n<a href="https://drive.google.com/file/d/1W9MxscFaF7e_DQQWchKj5LrT_F5K4j0L/view">'
+    await message.answer(text='Спасибо!\n'
+                              'Ваш второй подарок чек-лист \n<a href="https://drive.google.com/file/d/1W9MxscFaF7e_DQQWchKj5LrT_F5K4j0L/view">'
                               '«Как быстро выйти из операционки»</a>',
                          parse_mode='html')
     user_dict[message.chat.id] = await state.get_data()
     append_contact(list_contact=[user_dict[message.chat.id]['friend_name'],
                                  user_dict[message.chat.id]['friend_phone']],
                    sheet='friends')
-    await message.answer(text='Желаем успехов и побед в новых начинаниях! Наш телеграмм канал - https://t.me/hrfactor',
-                         reply_markup=keyboard_url_channel())
+    await message.answer(text='Подписвайтесь на наш телеграм канал -\n https://t.me/hrfactor\n\n'
+                              '<b>Желаем успехов и побед в новых начинаниях!</b>',
+                         reply_markup=keyboard_url_channel(),
+                         parse_mode='html')
