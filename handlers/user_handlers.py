@@ -183,7 +183,7 @@ async def get_phone_friend(message: Message, state: FSMContext) -> None:
     append_contact(list_contact=[user_dict[message.chat.id]['friend_name'],
                                  user_dict[message.chat.id]['friend_phone']],
                    sheet='friends')
-    await message.answer(text='Подписвайтесь на наш телеграм канал -\n https://t.me/hrfactor\n\n'
+    await message.answer(text='Подписвайтесь на наш телеграм канал - https://t.me/hrfactor\n\n'
                               '<b>Желаем успехов и побед в новых начинаниях!</b>',
                          reply_markup=keyboard_url_channel(),
                          parse_mode='html')
