@@ -2,7 +2,7 @@ import gspread
 import logging
 
 
-gp = gspread.service_account(filename='services/test.json')
+gp = gspread.service_account(filename='services/hrfactor.json')
 
 #Open Google spreadsheet
 gsheet = gp.open('HRFactor')
